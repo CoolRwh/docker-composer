@@ -21,7 +21,7 @@ RUN echo 'extension=psr.so' > /usr/local/etc/php/conf.d/11_psr.ini
 
 ### 安装扩展 redis , swoole 
 RUN pecl install redis \
-    && pecl install swoole \
+    && pecl install https://pecl.php.net/get/swoole-4.8.12.tgz \
     && docker-php-ext-enable redis swoole
 ### 开启 swoole.use_shortname = 'Off' 
 RUN echo "swoole.use_shortname = 'Off'" >> /usr/local/etc/php/conf.d/docker-php-ext-swoole.ini
