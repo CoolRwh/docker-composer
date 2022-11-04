@@ -5,8 +5,6 @@ ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 ## 阿里云
-# RUN  sed -i s@/archive.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list
-# RUN  sed -i s@/deb.debian.org/@/mirrors.aliyun.com/@g /etc/apt/sources.list 
 RUN sed -i s@/deb.debian.org/@/mirrors.aliyun.com/@g /etc/apt/sources.list
 
 RUN  apt-get clean && apt-get update
@@ -15,15 +13,6 @@ RUN apt-get install -y procps build-essential zlib1g-dev unzip bzip2 libbz2-dev 
  
 ### 扩展安装  
 RUN docker-php-ext-install pcntl pdo pdo_mysql gd zip 
-
-
-### 安装 cphalcon
-# ADD ./ext/cphalcon-4.0.6.zip cphalcon-4.0.6.zip
-# RUN unzip cphalcon-4.0.6.zip
-# RUN cd cphalcon-4.0.6/build && ./install
-# RUN echo 'extension=phalcon.so' > /usr/local/etc/php/conf.d/10_phalcon.ini
-# RUN rm -rf cphalcon-4.0.6.zip
-
 
 ### 安装psr
 RUN pecl install psr
