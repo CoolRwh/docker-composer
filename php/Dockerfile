@@ -9,15 +9,13 @@ RUN sed -i s@/deb.debian.org/@/mirrors.aliyun.com/@g /etc/apt/sources.list
 
 RUN  apt-get clean && apt-get update
 
-RUN apt-get install -y procps build-essential zlib1g-dev unzip bzip2 libbz2-dev libxml2 libxml2-dev libldap2-dev apt-utils libjpeg-dev libfreetype6-dev libpng-dev gcc libzip-dev 
+RUN apt-get install -y procps build-essential zlib1g-dev unzip bzip2 libbz2-dev libxml2 libxml2-dev libldap2-dev apt-utils libjpeg-dev libfreetype6-dev libpng-dev gcc libzip-dev git
  
 ### 扩展安装  
 RUN docker-php-ext-install pcntl pdo pdo_mysql gd zip 
 
 ### 安装psr
-RUN pecl install psr
-RUN echo 'extension=psr.so' > /usr/local/etc/php/conf.d/11_psr.ini
-
+RUN pecl install psr && echo 'extension=psr.so' > /usr/local/etc/php/conf.d/11_psr.ini
 
 ### 安装扩展 redis , swoole 
 RUN pecl install redis \
@@ -28,7 +26,6 @@ RUN echo "swoole.use_shortname = 'Off'" >> /usr/local/etc/php/conf.d/docker-php-
 
 # 安装 supervisor
 RUN apt-get install -y supervisor
-
 
 ENV COMPOSER_HOME /root/composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
