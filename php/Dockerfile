@@ -42,6 +42,18 @@ RUN unzip swoole-v4.6.6.zip   && mv swoole-v4.6.6  /usr/src/php/ext/swoole \
 && echo "swoole.use_shortname = 'Off'" >> /usr/local/etc/php/conf.d/docker-php-ext-swoole.ini \
 &&  echo 'extension=phalcon.so' > /usr/local/etc/php/conf.d/10_phalcon.ini
 
+# 安装 rabbitmq-c
+ADD ./ext/rabbitmq-c-0.8.0.zip rabbitmq-c-0.8.0.zip
+RUN unzip rabbitmq-c-0.8.0.zip
+RUN cd rabbitmq-c-0.8.0 && chmod -R 777 configure &&  ./configure --prefix=/usr/local/rabbitmq-c &&  make install
+RUN rm -rf rabbitmq-c-0.8.0.zip
+
+# 安装 amqp 扩展
+ADD ./ext/amqp-1.10.2.zip amqp-1.10.2.zip
+RUN unzip amqp-1.10.2.zip && mv amqp-1.10.2 /usr/src/php/ext/amqp
+RUN docker-php-ext-configure amqp --with-php-config=/usr/local/bin/php-config  --with-librabbitmq-dir=/usr/local/rabbitmq-c
+RUN docker-php-ext-install amqp
+RUN rm -rf amqp-1.10.2.zip
 
 ### 安装composer
 ENV COMPOSER_HOME /root/composer
@@ -52,7 +64,7 @@ ENV PATH $COMPOSER_HOME/vendor/bin:$PATH
 RUN composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
 ### 清除 安装包
-RUN rm -rf /tmp/*
-RUN rm -rf /var/www/html/*
+#RUN rm -rf /tmp/*
+#RUN rm -rf /var/www/html/*
 
 WORKDIR /data
