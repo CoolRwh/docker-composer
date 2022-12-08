@@ -1,4 +1,4 @@
-FROM php:7.3-fpm
+FROM php:7.4-fpm
 LABEL MAINTAINER="1016681491@qq.com"
 # 语言和时间
 ENV TZ=Asia/Shanghai
@@ -29,8 +29,14 @@ RUN docker-php-ext-install pcntl pdo pdo_mysql gd zip
 #    ### 开启 swoole.use_shortname = 'Off'
 #    && echo "swoole.use_shortname = 'Off'" >> /usr/local/etc/php/conf.d/docker-php-ext-swoole.ini
 #
+# 安装扩展 psr
 RUN pecl install psr && echo 'extension=psr.so' > /usr/local/etc/php/conf.d/11_psr.ini
 
+# 安装扩展 mongodb
+RUN pecl install mongodb && docker-php-ext-enable mongodb \
+&& echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/docker-php-ext-mongodb.ini
+
+# 安装扩展
 ADD ./ext/swoole-v4.6.6.zip swoole-v4.6.6.zip
 ADD ./ext/redis-5.3.7.zip redis-5.3.7.zip
 ADD ./ext/cphalcon-4.0.6.zip cphalcon-4.0.6.zip
