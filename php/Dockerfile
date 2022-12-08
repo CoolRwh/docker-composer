@@ -18,7 +18,7 @@ RUN apt-get install -y procps build-essential zlib1g-dev unzip bzip2 libbz2-dev 
 RUN docker-php-source extract
 
 ### docker-php-ext 扩展php安装
-RUN docker-php-ext-install pcntl pdo pdo_mysql gd zip
+RUN docker-php-ext-install pcntl pdo pdo_mysql gd zip sockets
 
 ### pecl 安装扩展 redis , psr ，swoole
 #RUN pecl install redis \
