@@ -20,15 +20,7 @@ RUN docker-php-source extract
 ### docker-php-ext 扩展php安装
 RUN docker-php-ext-install pcntl pdo pdo_mysql gd zip sockets
 
-### pecl 安装扩展 redis , psr ，swoole
-#RUN pecl install redis \
-#    && pecl install psr \
-#    && pecl install https://pecl.php.net/get/swoole-4.8.12.tgz \
-#    && docker-php-ext-enable redis swoole \
-#    && echo 'extension=psr.so' > /usr/local/etc/php/conf.d/11_psr.ini \
-#    ### 开启 swoole.use_shortname = 'Off'
-#    && echo "swoole.use_shortname = 'Off'" >> /usr/local/etc/php/conf.d/docker-php-ext-swoole.ini
-#
+
 # 安装扩展 psr
 RUN pecl install psr && echo 'extension=psr.so' > /usr/local/etc/php/conf.d/11_psr.ini
 
@@ -65,6 +57,10 @@ RUN rm -rf amqp-1.10.2.zip
 ENV COMPOSER_HOME /root/composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 ENV PATH $COMPOSER_HOME/vendor/bin:$PATH
+
+### 安装 supervisor
+RUN apt-get install -y supervisor
+
 
 ### 更改composer 镜像
 RUN composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
