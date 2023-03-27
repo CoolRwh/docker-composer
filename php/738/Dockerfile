@@ -1,4 +1,5 @@
-FROM php:7.4-fpm
+
+FROM php:7.3.8-fpm
 LABEL MAINTAINER="1016681491@qq.com"
 # 语言和时间
 ENV TZ=Asia/Shanghai
@@ -33,11 +34,14 @@ RUN pecl install mongodb && docker-php-ext-enable mongodb \
 # 安装扩展
 ADD ./ext/swoole-v4.6.6.zip swoole-v4.6.6.zip
 ADD ./ext/redis-5.3.7.zip redis-5.3.7.zip
+ADD ./ext/cphalcon-4.0.6.zip cphalcon-4.0.6.zip
 RUN unzip swoole-v4.6.6.zip   && mv swoole-v4.6.6  /usr/src/php/ext/swoole \
 &&  unzip redis-5.3.7.zip     && mv redis-5.3.7 /usr/src/php/ext/redis \
+&&  unzip cphalcon-4.0.6.zip  && mv cphalcon-4.0.6 /usr/src/php/ext/cphalcon-4.0.6  &&  cd /usr/src/php/ext/cphalcon-4.0.6/build && ./install \
 && docker-php-ext-install swoole redis  \
 ### 开启 swoole.use_shortname = 'Off'
-&& echo "swoole.use_shortname = 'Off'" >> /usr/local/etc/php/conf.d/docker-php-ext-swoole.ini
+&& echo "swoole.use_shortname = 'Off'" >> /usr/local/etc/php/conf.d/docker-php-ext-swoole.ini \
+&&  echo 'extension=phalcon.so' > /usr/local/etc/php/conf.d/10_phalcon.ini
 
 # 安装 rabbitmq-c
 ADD ./ext/rabbitmq-c-0.8.0.zip rabbitmq-c-0.8.0.zip
@@ -63,12 +67,6 @@ RUN apt-get install -y supervisor
 
 ### 更改composer 镜像
 RUN composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
-
-
-########################################################################################################################
-###  追加扩展
-#RUN echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/docker-php-ext-mongodb.ini
-
 
 ### 清除 安装包
 RUN rm -rf /tmp/*
