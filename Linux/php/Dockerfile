@@ -31,8 +31,8 @@ RUN pecl install mongodb && docker-php-ext-enable mongodb \
 && echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/docker-php-ext-mongodb.ini
 
 # 安装扩展
-ADD ./ext/swoole-v4.6.6.zip swoole-v4.6.6.zip
-ADD ./ext/redis-5.3.7.zip redis-5.3.7.zip
+ADD ext/swoole-v4.6.6.zip swoole-v4.6.6.zip
+ADD ext/redis-5.3.7.zip redis-5.3.7.zip
 RUN unzip swoole-v4.6.6.zip   && mv swoole-v4.6.6  /usr/src/php/ext/swoole \
 &&  unzip redis-5.3.7.zip     && mv redis-5.3.7 /usr/src/php/ext/redis \
 && docker-php-ext-install swoole redis  \
@@ -40,13 +40,13 @@ RUN unzip swoole-v4.6.6.zip   && mv swoole-v4.6.6  /usr/src/php/ext/swoole \
 && echo "swoole.use_shortname = 'Off'" >> /usr/local/etc/php/conf.d/docker-php-ext-swoole.ini
 
 # 安装 rabbitmq-c
-ADD ./ext/rabbitmq-c-0.8.0.zip rabbitmq-c-0.8.0.zip
+ADD ext/rabbitmq-c-0.8.0.zip rabbitmq-c-0.8.0.zip
 RUN unzip rabbitmq-c-0.8.0.zip
 RUN cd rabbitmq-c-0.8.0 && chmod -R 777 configure &&  ./configure --prefix=/usr/local/rabbitmq-c &&  make install
 RUN rm -rf rabbitmq-c-0.8.0.zip
 
 # 安装 amqp 扩展
-ADD ./ext/amqp-1.10.2.zip amqp-1.10.2.zip
+ADD ext/amqp-1.10.2.zip amqp-1.10.2.zip
 RUN unzip amqp-1.10.2.zip && mv amqp-1.10.2 /usr/src/php/ext/amqp
 RUN docker-php-ext-configure amqp --with-php-config=/usr/local/bin/php-config  --with-librabbitmq-dir=/usr/local/rabbitmq-c
 RUN docker-php-ext-install amqp
