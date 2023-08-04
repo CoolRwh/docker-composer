@@ -1,4 +1,4 @@
-version: '3'
+version: '3.1'
 services:
   mysql57:
     image: mysql:5.7  # 原镜像`mysql:5.7`
