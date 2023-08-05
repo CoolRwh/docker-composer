@@ -5,7 +5,6 @@
 
 
 #### 数据库
-
 - [mysql](./Linux/mysql)
 - [redis](./Linux/redis)
 
@@ -20,8 +19,8 @@
 #### 文件存储
 
 #### 其它
-
 - [nginx](./Linux/nginx)
+- [haproxy](./Linux/haproxy)
 
 
 ---
