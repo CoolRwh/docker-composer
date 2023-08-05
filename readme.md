@@ -21,7 +21,7 @@
 
 #### 其它
 
-- [mysql](./Linux/nginx)
+- [nginx](./Linux/nginx)
 
 
 ---
