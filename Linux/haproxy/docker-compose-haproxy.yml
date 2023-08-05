@@ -1,0 +1,12 @@
+version: '3.1'
+services:
+  haproxy:
+    image: 'haproxy:1.4.26' 
+    container_name: haproxy
+    privileged: true
+    restart: unless-stopped
+    ports:
+      - '1080:1080'
+    volumes:
+      - './haproxy-master/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg'
+    
