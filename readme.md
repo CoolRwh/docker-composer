@@ -21,8 +21,8 @@
 #### 其它
 - [nginx](./Linux/nginx)
 - [haproxy](./Linux/haproxy)
-- [haproxy](./Linux/zookeeper)
-- [haproxy](./Linux/php)
+- [zookeeper](./Linux/zookeeper)
+- [php](./Linux/php)
 
 ---
 
