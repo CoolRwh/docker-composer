@@ -11,10 +11,9 @@ RUN sed -i s@/deb.debian.org/@/mirrors.aliyun.com/@g /etc/apt/sources.list
 RUN apt-get clean && apt-get update
 
 ### 安装更新软件
-RUN apt-get install -y procps build-essential zlib1g-dev unzip bzip2  \ 
-    libbz2-dev libxml2 libxml2-dev libldap2-dev apt-utils libjpeg-dev libfreetype6-dev \ 
-    libpng-dev gcc vim libzip-dev  libssl-dev pkg-config libcurl4-openssl-dev 
-
+RUN apt-get install -y procps build-essential zlib1g-dev unzip bzip2  \
+    libbz2-dev libxml2 libxml2-dev libldap2-dev apt-utils libjpeg-dev libfreetype6-dev \
+    libpng-dev gcc vim libzip-dev  libssl-dev pkg-config libcurl4-openssl-dev
 
 ### 初始化 /usr/src/php
 RUN docker-php-source extract
@@ -22,48 +21,25 @@ RUN docker-php-source extract
 ### docker-php-ext 扩展php安装
 RUN docker-php-ext-install pcntl pdo pdo_mysql gd zip sockets
 
-
 # 安装扩展 psr
-RUN pecl install psr && echo 'extension=psr.so' > /usr/local/etc/php/conf.d/11_psr.ini
+RUN pecl install psr  && docker-php-ext-enable psr
 
 # 安装扩展 mongodb
-RUN pecl install mongodb && docker-php-ext-enable mongodb \
-&& echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/docker-php-ext-mongodb.ini
+RUN pecl install mongodb && docker-php-ext-enable mongodb
 
-# 安装扩展
-ADD ./ext/swoole-v4.6.6.zip swoole-v4.6.6.zip
-ADD ./ext/redis-5.3.7.zip redis-5.3.7.zip
-RUN unzip swoole-v4.6.6.zip   && mv swoole-v4.6.6  /usr/src/php/ext/swoole \
-&&  unzip redis-5.3.7.zip     && mv redis-5.3.7 /usr/src/php/ext/redis \
-&& docker-php-ext-install swoole redis  \
-### 开启 swoole.use_shortname = 'Off'
+# 安装扩展 redis
+RUN pecl install redis && docker-php-ext-enable redis
+
+# 安装扩展 swoole
+RUN pecl install swoole-4.6.6 && docker-php-ext-enable swoole \
+### 按需 开启  swoole.use_shortname = 'Off'
 && echo "swoole.use_shortname = 'Off'" >> /usr/local/etc/php/conf.d/docker-php-ext-swoole.ini
 
-# 安装 rabbitmq-c
-ADD ./ext/rabbitmq-c-0.8.0.zip rabbitmq-c-0.8.0.zip
-RUN unzip rabbitmq-c-0.8.0.zip
-RUN cd rabbitmq-c-0.8.0 && chmod -R 777 configure &&  ./configure --prefix=/usr/local/rabbitmq-c &&  make install
-RUN rm -rf rabbitmq-c-0.8.0.zip
-
-# 安装 amqp 扩展
-ADD ./ext/amqp-1.10.2.zip amqp-1.10.2.zip
-RUN unzip amqp-1.10.2.zip && mv amqp-1.10.2 /usr/src/php/ext/amqp
-RUN docker-php-ext-configure amqp --with-php-config=/usr/local/bin/php-config  --with-librabbitmq-dir=/usr/local/rabbitmq-c
-RUN docker-php-ext-install amqp
-RUN rm -rf amqp-1.10.2.zip
-
-### 安装composer
-ENV COMPOSER_HOME /root/composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-ENV PATH $COMPOSER_HOME/vendor/bin:$PATH
-
-### 安装 supervisor
-RUN apt-get install -y supervisor
-
+# 安装 rabbitmq，amqp
+RUN apt-get install -y librabbitmq-dev && pecl install amqp && docker-php-ext-enable amqp
 
 ### 更改composer 镜像
 RUN composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
-
 
 ########################################################################################################################
 ###  追加扩展
